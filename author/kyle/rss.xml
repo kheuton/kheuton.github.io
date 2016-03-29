@@ -18,11 +18,7 @@
 	  <pubDate>2014-08-12T03:18:00-07:00</pubDate>
 	  <guid>//map-yaself</guid>
 	  <description><![CDATA[
-	     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
-
-<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-
-<div id="map">
+	     <div id="map">
 
 </div>
 
