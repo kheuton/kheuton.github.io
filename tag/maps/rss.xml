@@ -18,7 +18,9 @@
 	  <pubDate>2016-03-27T03:18:00-07:00</pubDate>
 	  <guid>//map-gap</guid>
 	  <description><![CDATA[
-	     <script type="text/javascript" src="my_layer.json"></script>
+	     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<script type="text/javascript" src="my_layer.json"></script>
 
 <style>
 
