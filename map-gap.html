@@ -312,6 +312,9 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 		};
 
 		legend.addTo(map);
+		timeout(function() {
+		    map.invalidateSize()
+		}, 0)
 
 </script>
 
@@ -334,7 +337,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
                 <h4><a href="/author/kyle">Kyle Heuton</a></h4>
                 
                 
-                    <p> Global Health Research</p>
+                    <p> Global Health Researcher</p>
                 
                 <div class="author-meta">
                     <span class="author-location icon-location"> Seattle</span> 
