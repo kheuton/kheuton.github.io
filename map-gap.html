@@ -258,9 +258,12 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 			}
 
 			info.update(layer.feature.properties);
+			resetStyle(lastClicked)
+			lastClicked = e;
 		}
 
 		var geojson;
+		var lastClicked;
 
 		function resetHighlight(e) {
 			geojson.resetStyle(e.target);
