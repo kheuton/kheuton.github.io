@@ -110,6 +110,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 			       d > 5   ? '#FED976' :
 			                  '#FFEDA0';
 		}
+		var lastClicked;
 
 		function style(feature) {
 			return {
@@ -137,12 +138,13 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 			}
 
 			info.update(layer.feature.properties);
-			resetStyle(lastClicked)
+			if (lastClicked) {
+				resetHighlight(lastClicked);
+			}
 			lastClicked = e;
 		}
 
 		var geojson;
-		var lastClicked;
 
 		function resetHighlight(e) {
 			geojson.resetStyle(e.target);
