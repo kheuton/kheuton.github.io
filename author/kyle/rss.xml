@@ -139,16 +139,20 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
 			info.update(layer.feature.properties);
 			if (lastClicked) {
-				resetHighlight(lastClicked);
+				resetHighlightClick(lastClicked);
 			}
 			lastClicked = e;
 		}
 
 		var geojson;
 
-		function resetHighlight(e) {
+		function resetHighlightMouse(e) {
 			geojson.resetStyle(e.target);
 			info.update();
+		}
+		function resetHighlightClick(e) {
+			geojson.resetStyle(e.target);
+
 		}
 
 		function zoomToFeature(e) {
@@ -159,7 +163,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 			layer.on({
 				mouseover: highlightFeature,
 				click: highlightFeature,
-				mouseout: resetHighlight,
+				mouseout: resetHighlightMouse,
 				dblclick: zoomToFeature
 			});
 		}
