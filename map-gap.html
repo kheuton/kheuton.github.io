@@ -274,8 +274,9 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 		function onEachFeature(feature, layer) {
 			layer.on({
 				mouseover: highlightFeature,
+				click: highlightFeature,
 				mouseout: resetHighlight,
-				click: zoomToFeature
+				dblclick: zoomToFeature
 			});
 		}
 
