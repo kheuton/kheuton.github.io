@@ -27,12 +27,18 @@
   <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
   <style type="text/css">
     #map {
-      height:256px;
+      height:600px;
     }
-    
+
     .leaflet-container img {
       position: absolute !important;
       -webkit-transform: none !important;
+    }
+
+    @media only screen and (max-width: 500px) {
+      .leaflet-container img {
+        width: calc(100%) !important;
+      }
     }
   </style>
 
@@ -138,7 +144,7 @@
     
     <article class="post">
         <header class="post-header">
-            <h2 class="post-title"><a href="/map-yaself">Putting a map in jekyll</a></h2>
+            <h2 class="post-title"><a href="/map-gap">Mapping 3rd Grade ELA Smarter Balanced Assessment Results</a></h2>
         </header>
         <section class="post-excerpt">
             <p>
@@ -147,7 +153,11 @@
 
 
 
- <a class="read-more" href="/map-yaself">&raquo;</a></p>
+
+
+
+
+ <a class="read-more" href="/map-gap">&raquo;</a></p>
         </section>
         <footer class="post-meta">
             <img class="author-thumb" src="/assets/images/casper.png" alt="Author image" nopin="nopin" />
@@ -158,19 +168,11 @@
                 on 
                 
                     
-                       <a href='/tag/fables'>Fables</a>,
-                       
-                
-                    
-                       <a href='/tag/fiction'>Fiction</a>,
-                       
-                
-                    
                        <a href='/tag/maps'>Maps</a>
                        
                 
             
-            <time class="post-date" datetime="2014-08-12">12 Aug 2014</time>
+            <time class="post-date" datetime="2016-03-27">27 Mar 2016</time>
         </footer>
     </article>
     

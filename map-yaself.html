@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- [[! Page Meta ]] -->
-    <title>Putting a map in jekyll</title>
+    <title>Mapping 3rd Grade ELA Smarter Balanced Assessment Results</title>
     <meta name="description" content="Finding The Way To Blog - Me just trying to figure out how to publish with jekyll." />
 
     <meta name="HandheldFriendly" content="True" />
@@ -27,9 +27,9 @@
   <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
   <style type="text/css">
     #map {
-      height:256px;
+      height:600px;
     }
-    
+
     .leaflet-container img {
       position: absolute !important;
       -webkit-transform: none !important;
@@ -115,21 +115,13 @@
     <article class="post tag-test tag-content">
 
         <header class="post-header">
-            <h1 class="post-title">Putting a map in jekyll</h1>
+            <h1 class="post-title">Mapping 3rd Grade ELA Smarter Balanced Assessment Results</h1>
             <section class="post-meta">
             <!-- <a href='/'>Kyle Heuton</a> -->
-            <time class="post-date" datetime="2014-08-12">12 Aug 2014</time>
+            <time class="post-date" datetime="2016-03-27">27 Mar 2016</time>
                 <!-- [[tags prefix=" on "]] -->
                  
                 on 
-                
-                    
-                       <a href='/tag/fables'>Fables</a>,
-                       
-                
-                    
-                       <a href='/tag/fiction'>Fiction</a>,
-                       
                 
                     
                        <a href='/tag/maps'>Maps</a>
@@ -141,23 +133,177 @@
 
         <section class="post-content">
             
-            <div id="map">
+            <script type="text/javascript" src="my_layer.json"></script>
+
+<style>
+
+
+	.info {
+		padding: 6px 8px;
+		font: 14px/16px Arial, Helvetica, sans-serif;
+		background: white;
+		background: rgba(255,255,255,0.8);
+		box-shadow: 0 0 15px rgba(0,0,0,0.2);
+		border-radius: 5px;
+	}
+	.info h4 {
+		margin: 0 0 5px;
+		color: #777;
+	}
+.legend {
+	text-align: left;
+	line-height: 18px;
+	color: #555;
+}
+.legend i {
+	width: 18px;
+	height: 18px;
+	float: left;
+	margin-right: 8px;
+	opacity: 0.7;
+}
+</style>
+
+<div id="map">
 
 </div>
 
 <script>
+function getColor(d) {
+    return d > 1000 ? '#800026' :
+           d > 500  ? '#BD0026' :
+           d > 200  ? '#E31A1C' :
+           d > 100  ? '#FC4E2A' :
+           d > 50   ? '#FD8D3C' :
+           d > 20   ? '#FEB24C' :
+           d > 10   ? '#800026' :
+                      '#800026';
+}
+var geojson;
 
-var mapboxAccessToken = 'pk.eyJ1Ijoia2hldXRvbiIsImEiOiJjaW1janY0MWUwMDBvdWZsdnY4YXdubjRrIn0._VsfvE51YTv8S4SeKoIRlA';
-var map = L.map('map').setView([37.8, -96], 4);
-L.tileLayer('http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png', {
+var map = L.map('map').setView([47.6062, -122.3321], 11);
+L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
 	maxZoom: 18,
 	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + mapboxAccessToken, {
-    id: 'kheuton.phg9o4a0',
-    attribution: 'None',
-    tms: false,
-});
+
+
+
+		// control that shows state info on hover
+		var info = L.control();
+
+		info.onAdd = function (map) {
+			this._div = L.DomUtil.create('div', 'info');
+			this.update();
+			return this._div;
+		};
+
+		info.update = function (props) {
+			this._div.innerHTML = '<h4>Achievement Gap</h4>' +  (props ?
+				'<b>' + props.ES_ZONE + '</b><br />' + props.gap + '% more White students meet standards than their Black peers'
+				: 'Hover over a school');
+		};
+
+		info.addTo(map);
+
+		// get border based on which is misisng
+		function getBorderColor(d) {
+			return d == 'white' ? 'white':
+				  	 d == 'black' ? 'black':
+						 d == 'none'  ? 'gray':
+						 								 'gray';
+		}
+
+		// get color depending on population density value
+		function getColor(d) {
+			return d > 60 ? '#800026' :
+			       d > 50  ? '#BD0026' :
+			       d > 40  ? '#E31A1C' :
+			       d > 30  ? '#FC4E2A' :
+			       d > 20   ? '#FD8D3C' :
+			       d > 10   ? '#FEB24C' :
+			       d > 5   ? '#FED976' :
+			                  '#FFEDA0';
+		}
+
+		function style(feature) {
+			return {
+				weight: 2,
+				opacity: 1,
+				color: getBorderColor(feature.properties.missing),
+				dashArray: '3',
+				fillOpacity: 0.7,
+				fillColor: getColor(feature.properties.gap)
+			};
+		}
+
+		function highlightFeature(e) {
+			var layer = e.target;
+
+			layer.setStyle({
+				weight: 5,
+				color: '#666',
+				dashArray: '',
+				fillOpacity: 0.7
+			});
+
+			if (!L.Browser.ie && !L.Browser.opera) {
+				layer.bringToFront();
+			}
+
+			info.update(layer.feature.properties);
+		}
+
+		var geojson;
+
+		function resetHighlight(e) {
+			geojson.resetStyle(e.target);
+			info.update();
+		}
+
+		function zoomToFeature(e) {
+			map.fitBounds(e.target.getBounds());
+		}
+
+		function onEachFeature(feature, layer) {
+			layer.on({
+				mouseover: highlightFeature,
+				mouseout: resetHighlight,
+				click: zoomToFeature
+			});
+		}
+
+		geojson = L.geoJson(schoolData, {
+			style: style,
+			onEachFeature: onEachFeature
+		}).addTo(map);
+
+		map.attributionControl.addAttribution('Assessment data &copy; <a href="http://www.k12.wa.us/">OSPI</a>');
+
+
+		var legend = L.control({position: 'bottomright'});
+
+		legend.onAdd = function (map) {
+
+			var div = L.DomUtil.create('div', 'info legend'),
+				grades = [0, 5, 10, 20, 30, 40, 50, 60],
+				labels = [],
+				from, to;
+
+			for (var i = 0; i < grades.length; i++) {
+				from = grades[i];
+				to = grades[i + 1];
+
+				labels.push(
+					'<i style="background:' + getColor(from + 1) + '"></i> ' +
+					from + (to ? '&ndash;' + to : '+'));
+			}
+
+			div.innerHTML = labels.join('<br>');
+			return div;
+		};
+
+		legend.addTo(map);
 
 </script>
 
@@ -192,7 +338,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token='
 
             <section class="share">
                 <h4>Share this post</h4>
-                <a class="icon-twitter" href="http://twitter.com/share?text=Putting a map in jekyll&amp;url=http://kheuton.github.io/map-yaself"
+                <a class="icon-twitter" href="http://twitter.com/share?text=Mapping 3rd Grade ELA Smarter Balanced Assessment Results&amp;url=http://kheuton.github.io/map-yaself"
                     onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
                     <span class="hidden">Twitter</span>
                 </a>
@@ -219,20 +365,13 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token='
 
     <!-- [[! next_post ]] -->
     
-        <a class="read-next-story " style="background-image: url(/assets/images/cover3.jpg)" href="/a-full-and-comprehensive-style-test">
-            <section class="post">
-                <h2>A Full and Comprehensive Style Test</h2>
-                <p>This is just an ipsis verbis copy of the first example running on the Ghost...</p>
-            </section>
-        </a>
-    
     <!-- [[! /next_post ]] -->
     <!-- [[! prev_post ]] -->
     
-        <a class="read-next-story prev " style="background-image: url(/assets/images/cover7.jpg)" href="/the-businessman-and-fisherman">
+        <a class="read-next-story prev " style="background-image: url(/assets/images/cover3.jpg)" href="/a-full-and-comprehensive-style-test">
             <section class="post">
-                <h2>The Businessman & the fisherman</h2>
-                <p>An American businessman took a vacation to a small coastal Mexican village on doctor’s orders....</p>
+                <h2>A Full and Comprehensive Style Test</h2>
+                <p>This is just an ipsis verbis copy of the first example running on the Ghost...</p>
             </section>
         </a>
     

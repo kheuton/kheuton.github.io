@@ -27,12 +27,18 @@
   <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
   <style type="text/css">
     #map {
-      height:256px;
+      height:600px;
     }
-    
+
     .leaflet-container img {
       position: absolute !important;
       -webkit-transform: none !important;
+    }
+
+    @media only screen and (max-width: 500px) {
+      .leaflet-container img {
+        width: calc(100%) !important;
+      }
     }
   </style>
 
@@ -232,13 +238,6 @@ The poor King looked puzzled and unhappy, and struggled with the pencil for some
     
     <!-- [[! /next_post ]] -->
     <!-- [[! prev_post ]] -->
-    
-        <a class="read-next-story prev " style="background-image: url(/assets/images/cover1.jpg)" href="/down-the-rabbit-hole">
-            <section class="post">
-                <h2>Down The Rabbit Hole</h2>
-                <p>Alice was beginning to get very tired of sitting by her sister on the bank,...</p>
-            </section>
-        </a>
     
     <!-- [[! /prev_post ]] -->
 </aside>

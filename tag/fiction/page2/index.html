@@ -27,12 +27,18 @@
   <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
   <style type="text/css">
     #map {
-      height:256px;
+      height:600px;
     }
-    
+
     .leaflet-container img {
       position: absolute !important;
       -webkit-transform: none !important;
+    }
+
+    @media only screen and (max-width: 500px) {
+      .leaflet-container img {
+        width: calc(100%) !important;
+      }
     }
   </style>
 
@@ -112,7 +118,7 @@
             <h1 class="page-title">Fiction</h1>
             <h2 class="page-description">
             
-			    A 7-post collection
+			    A 6-post collection
             
             </h2>
         </div>
@@ -139,30 +145,6 @@
     </div>
 
     <!-- This is the post loop - each post will be output using this markup -->
-    
-    <article class="post">
-        <header class="post-header">
-            <h2 class="post-title"><a href="/down-the-rabbit-hole">Down The Rabbit Hole</a></h2>
-        </header>
-        <section class="post-excerpt">
-            <p>Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had... <a class="read-more" href="/down-the-rabbit-hole">&raquo;</a></p>
-        </section>
-        <footer class="post-meta">
-            <img class="author-thumb" src="/assets/images/casper.png" alt="Author image" nopin="nopin" />
-            <!-- author -->
-            <a href='/author/kyle'>Kyle Heuton</a>
-            <!-- [[tags prefix=" on "]] -->
-             
-                on 
-                
-                    
-                       <a href='/tag/fiction'>Fiction</a>
-                       
-                
-            
-            <time class="post-date" datetime="1865-11-26">26 Nov 1865</time>
-        </footer>
-    </article>
     
     <article class="post">
         <header class="post-header">

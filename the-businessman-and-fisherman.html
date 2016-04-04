@@ -27,12 +27,18 @@
   <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
   <style type="text/css">
     #map {
-      height:256px;
+      height:600px;
     }
-    
+
     .leaflet-container img {
       position: absolute !important;
       -webkit-transform: none !important;
+    }
+
+    @media only screen and (max-width: 500px) {
+      .leaflet-container img {
+        width: calc(100%) !important;
+      }
     }
   </style>
 
@@ -228,27 +234,15 @@
 
     <!-- [[! next_post ]] -->
     
-        <a class="read-next-story " style="background-image: url(/assets/images/cover7.jpg)" href="/map-yaself">
+        <a class="read-next-story " style="background-image: url(/assets/images/cover3.jpg)" href="/a-full-and-comprehensive-style-test">
             <section class="post">
-                <h2>Putting a map in jekyll</h2>
-                <p>
-
-
-
-
-</p>
+                <h2>A Full and Comprehensive Style Test</h2>
+                <p>This is just an ipsis verbis copy of the first example running on the Ghost...</p>
             </section>
         </a>
     
     <!-- [[! /next_post ]] -->
     <!-- [[! prev_post ]] -->
-    
-        <a class="read-next-story prev " style="background-image: url(/assets/images/cover4.jpg)" href="/i-have-a-dream">
-            <section class="post">
-                <h2>I Have a Dream</h2>
-                <p>I am happy to join with you today in what will go down in history...</p>
-            </section>
-        </a>
     
     <!-- [[! /prev_post ]] -->
 </aside>

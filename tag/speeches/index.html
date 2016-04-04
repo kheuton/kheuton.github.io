@@ -27,12 +27,18 @@
   <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
   <style type="text/css">
     #map {
-      height:256px;
+      height:600px;
     }
-    
+
     .leaflet-container img {
       position: absolute !important;
       -webkit-transform: none !important;
+    }
+
+    @media only screen and (max-width: 500px) {
+      .leaflet-container img {
+        width: calc(100%) !important;
+      }
     }
   </style>
 
@@ -157,34 +163,6 @@
                 
             
             <time class="post-date" datetime="1963-08-28">28 Aug 1963</time>
-        </footer>
-    </article>
-    
-    <article class="post">
-        <header class="post-header">
-            <h2 class="post-title"><a href="/the-purpose-of-education">The Purpose of Education</a></h2>
-        </header>
-        <section class="post-excerpt">
-            <p>As I engage in the so-called “bull sessions” around and about the school, I too often find that most college men have a misconception of the... <a class="read-more" href="/the-purpose-of-education">&raquo;</a></p>
-        </section>
-        <footer class="post-meta">
-            <img class="author-thumb" src="/assets/images/casper.png" alt="Author image" nopin="nopin" />
-            <!-- author -->
-            <a href='/author/kyle'>Kyle Heuton</a>
-            <!-- [[tags prefix=" on "]] -->
-             
-                on 
-                
-                    
-                       <a href='/tag/speeches'>Speeches</a>,
-                       
-                
-                    
-                       <a href='/tag/fiction'>Fiction</a>
-                       
-                
-            
-            <time class="post-date" datetime="1948-12-12">12 Dec 1948</time>
         </footer>
     </article>
     
