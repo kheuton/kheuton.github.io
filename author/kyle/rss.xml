@@ -12,6 +12,100 @@
    <atom:link href="rss" rel="self" type="application/rss+xml" />
    
 	<item>
+	  <title>An Experimental and broken d3 map</title>
+	  <link>//map-gap_d3</link>
+	  <author>Kyle Heuton</author>
+	  <pubDate>2016-04-04T03:18:00-07:00</pubDate>
+	  <guid>//map-gap_d3</guid>
+	  <description><![CDATA[
+	     <script type="text/javascript" src="my_layer.json"></script>
+
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+
+<script type="text/javascript" src="http://d3js.org/queue.v1.min.js"></script>
+
+<script type="text/javascript" src="http://d3js.org/topojson.v0.min.js"></script>
+
+<style>
+
+
+	.info {
+		padding: 6px 8px;
+		font: 14px/16px Arial, Helvetica, sans-serif;
+		background: white;
+		background: rgba(255,255,255,0.8);
+		box-shadow: 0 0 15px rgba(0,0,0,0.2);
+		border-radius: 5px;
+	}
+	.info h4 {
+		margin: 0 0 5px;
+		color: #777;
+	}
+.legend {
+	text-align: left;
+	line-height: 18px;
+	color: #555;
+}
+.legend i {
+	width: 18px;
+	height: 18px;
+	float: left;
+	margin-right: 8px;
+	opacity: 0.7;
+}
+div.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: 150px;                  
+  height: 25px;                 
+  padding: 2px;             
+  font-size: 10px;     
+  background: #FFFFE0;
+  border: 1px;      
+  border-radius: 8px;           
+  pointer-events: none;         
+}   
+</style>
+
+<div id="example"></div>
+
+<script>
+//Width and height
+var w = 960;
+var h = 1160;
+var projection = d3.geo.albers()
+    .center([0, 47.6062])
+    .rotate([122.3321, 0])
+    .parallels([45, 50])
+    .scale(120000).translate([w/2 , h/2 ]);
+
+//Define path generator
+var path = d3.geo.path().projection(projection);
+
+//Create SVG element
+var svg = d3.select("div#example").append("svg").attr({width:w, height: h});
+
+//Load in GeoJSON data
+
+
+		//Bind data and create one path per GeoJSON feature
+		svg.selectAll("path")
+			 .data(schoolData.features)
+			 .enter()
+			 .append("path")
+			 .attr("d", path)
+			 .attr("fill","#666666");
+
+
+
+
+</script>
+
+
+	  ]]></description>
+	</item>
+
+	<item>
 	  <title>Mapping 3rd Grade ELA Smarter Balanced Assessment Results</title>
 	  <link>//map-gap</link>
 	  <author>Kyle Heuton</author>
@@ -128,7 +222,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
 			layer.setStyle({
 				weight: 5,
-				color: '#666',
+				color: getBorderColor(layer.feature.properties.missing),
 				dashArray: '',
 				fillOpacity: 0.7
 			});

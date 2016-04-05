@@ -249,7 +249,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
 			layer.setStyle({
 				weight: 5,
-				color: '#666',
+				color: getBorderColor(layer.feature.properties.missing),
 				dashArray: '',
 				fillOpacity: 0.7
 			});
@@ -383,6 +383,22 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 <aside class="read-next">
 
     <!-- [[! next_post ]] -->
+    
+        <a class="read-next-story " style="background-image: url(/assets/images/cover7.jpg)" href="/map-gap_d3">
+            <section class="post">
+                <h2>An Experimental and broken d3 map</h2>
+                <p>
+
+
+
+
+
+
+
+
+</p>
+            </section>
+        </a>
     
     <!-- [[! /next_post ]] -->
     <!-- [[! prev_post ]] -->
