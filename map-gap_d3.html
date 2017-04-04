@@ -86,15 +86,12 @@
     </a>
     <ul>
         <li class="nav-home " role="presentation"><a href="/">Home</a></li>
-        <li class="nav-about " role="presentation"><a href="/about">About</a></li>
-        <li class="nav-fables " role="presentation"><a href="/tag/fables">Fables</a></li>
-        <li class="nav-speeches " role="presentation"><a href="/tag/speeches">Speeches</a></li>
-        <li class="nav-fiction " role="presentation"><a href="/tag/fiction">Fiction</a></li>
-        <li class="nav-author " role="presentation"><a href="/author/casper">Author</a></li>
+        <li class="nav-author " role="presentation"><a href="/author/kyle">Author</a></li>
     </ul>
     <a class="subscribe-button icon-feed" href="/rss.xml">Subscribe</a>
 </div>
 <span class="nav-cover"></span>
+
 
     <div class="site-wrapper">
 
@@ -147,7 +144,8 @@
 
 <script type="text/javascript" src="http://d3js.org/topojson.v0.min.js"></script>
 
-<p><select id="opts">
+<p>After building my first interactive map in Leaflet, I wanted more control over the data. This was my first attempt at using d3 to generate a choropleth. It turned out to be a bit more work and a bit uglier, so in the end I decided to go with the compromise of d3 svg’s on a Leaflet map.
+<select id="opts">
 <option value="gap">gap</option>
 <option value="missing" selected="selected">missing</option></select></p>
 
@@ -394,17 +392,7 @@ function getBorderColor(d) {
         <a class="read-next-story prev " style="background-image: url(/assets/images/cover7.jpg)" href="/map-gap-ela-leaflet">
             <section class="post">
                 <h2>Mapping 3rd Grade ELA Smarter Balanced Assessment Results</h2>
-                <p>
-
-
-
-
-
-
-
-
-
-</p>
+                <p>My first attempt at visualizing the achievement gap in Seattle. This only contains data for...</p>
             </section>
         </a>
     

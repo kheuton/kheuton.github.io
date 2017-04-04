@@ -875,7 +875,8 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
 <script type="text/javascript" src="http://d3js.org/topojson.v0.min.js"></script>
 
-<p><select id="opts">
+<p>After building my first interactive map in Leaflet, I wanted more control over the data. This was my first attempt at using d3 to generate a choropleth. It turned out to be a bit more work and a bit uglier, so in the end I decided to go with the compromise of d3 svg’s on a Leaflet map.
+<select id="opts">
 <option value="gap">gap</option>
 <option value="missing" selected="selected">missing</option></select></p>
 
@@ -1092,6 +1093,8 @@ function getBorderColor(d) {
 	opacity: 0.7;
 }
 </style>
+
+<p>My first attempt at visualizing the achievement gap in Seattle. This only contains data for the 2014-2015 school year, and the 3rd grade results of the English Language Arts portion of the new Smarter Balanced Assessment. A much more complete version of this visualization with more data is available <a href="/map-gap">here</a></p>
 
 <div id="map">
 
