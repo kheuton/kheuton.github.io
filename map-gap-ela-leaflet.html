@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- [[! Page Meta ]] -->
-    <title>Mapping District Average Scores</title>
+    <title>Mapping 3rd Grade ELA Smarter Balanced Assessment Results</title>
     <meta name="description" content="Education Maps - " />
 
     <meta name="HandheldFriendly" content="True" />
@@ -121,10 +121,10 @@
     <article class="post tag-test tag-content">
 
         <header class="post-header">
-            <h1 class="post-title">Mapping District Average Scores</h1>
+            <h1 class="post-title">Mapping 3rd Grade ELA Smarter Balanced Assessment Results</h1>
             <section class="post-meta">
             <!-- <a href='/'>Kyle Heuton</a> -->
-            <time class="post-date" datetime="2016-04-28">28 Apr 2016</time>
+            <time class="post-date" datetime="2016-03-27">27 Mar 2016</time>
                 <!-- [[tags prefix=" on "]] -->
                  
                 on 
@@ -139,13 +139,7 @@
 
         <section class="post-content">
             
-            <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-
-<script type="text/javascript" src="http://d3js.org/queue.v1.min.js"></script>
-
-<script type="text/javascript" src="http://d3js.org/topojson.v0.min.js"></script>
-
-<script src="http://d3js.org/queue.v1.min.js"></script>
+            <script type="text/javascript" src="my_layer.json"></script>
 
 <style>
 
@@ -181,25 +175,17 @@
 </div>
 
 <script>
-queue()
-    .defer(d3.json, 'district_map.json') // topojson polygons
-
-    .await(doIt); // function that uses files
-
-function doIt(error, schoolData) {
-	console.warn('but'+error);
-	console.warn('here');
 function getColor(d) {
-    return d > 3 ? '#3288bd' :
-           d > 2  ? '#99d594' :
-           d > 1  ? '#e6f598' :
-           d > 0  ? '#ffffbf' :
-           d > -1   ? '#fee08b' :
-           d > -2   ? '#fc8d59' :
-           d > -3   ? '#d53e4f' :
-                      '#d53e4f';
+    return d > 1000 ? '#800026' :
+           d > 500  ? '#BD0026' :
+           d > 200  ? '#E31A1C' :
+           d > 100  ? '#FC4E2A' :
+           d > 50   ? '#FD8D3C' :
+           d > 20   ? '#FEB24C' :
+           d > 10   ? '#800026' :
+                      '#800026';
 }
-
+var geojson;
 
 var map = L.map('map').setView([47.6062, -122.3321], 11);
 L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
@@ -220,7 +206,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
 		info.update = function (props) {
 			this._div.innerHTML = '<h4>Achievement Gap</h4>' +  (props ?
-				'<b>' + props.data_name + '</b><br />' + props.score + '% more White students meet standards than their Black peers'
+				'<b>' + props.ES_ZONE + '</b><br />' + props.gap + '% more White students meet standards than their Black peers'
 				: 'Hover over a school');
 		};
 
@@ -236,25 +222,25 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
 		// get color depending on population density value
 		function getColor(d) {
-		    return d > 3 ? '#3288bd' :
-		           d > 2  ? '#99d594' :
-		           d > 1  ? '#e6f598' :
-		           d > 0  ? '#ffffbf' :
-		           d > -1   ? '#fee08b' :
-		           d > -2   ? '#fc8d59' :
-		           d > -3   ? '#d53e4f' :
-		                      '#d53e4f';
+			return d > 60 ? '#800026' :
+			       d > 50  ? '#BD0026' :
+			       d > 40  ? '#E31A1C' :
+			       d > 30  ? '#FC4E2A' :
+			       d > 20   ? '#FD8D3C' :
+			       d > 10   ? '#FEB24C' :
+			       d > 5   ? '#FED976' :
+			                  '#FFEDA0';
 		}
 		var lastClicked;
 
 		function style(feature) {
 			return {
-				weight: 0.2,
+				weight: 2,
 				opacity: 1,
-				color: getBorderColor('white'),
+				color: getBorderColor(feature.properties.missing),
 				dashArray: '3',
 				fillOpacity: 0.7,
-				fillColor: getColor(feature.properties.score)
+				fillColor: getColor(feature.properties.gap)
 			};
 		}
 
@@ -263,7 +249,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
 			layer.setStyle({
 				weight: 5,
-				color: getBorderColor('white'),
+				color: getBorderColor(layer.feature.properties.missing),
 				dashArray: '',
 				fillOpacity: 0.7
 			});
@@ -303,14 +289,10 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 			});
 		}
 
-
-
-
-
-			geojson = L.geoJson(schoolData, {
-				style: style,
-				onEachFeature: onEachFeature
-			}).addTo(map);
+		geojson = L.geoJson(schoolData, {
+			style: style,
+			onEachFeature: onEachFeature
+		}).addTo(map);
 
 		map.attributionControl.addAttribution('Assessment data &copy; <a href="http://www.k12.wa.us/">OSPI</a>');
 
@@ -320,7 +302,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 		legend.onAdd = function (map) {
 
 			var div = L.DomUtil.create('div', 'info legend'),
-				grades = [-4, -3, -2, -1, 0, 1, 2, 3],
+				grades = [0, 5, 10, 20, 30, 40, 50, 60],
 				labels = [],
 				from, to;
 
@@ -338,8 +320,10 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 		};
 
 		legend.addTo(map);
+		timeout(function() {
+		    map.invalidateSize()
+		}, 0)
 
-	};
 </script>
 
 
@@ -353,7 +337,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
             
             <figure class="author-image">
-                <a class="img" href="/author/kyle" style="background-image: url(/assets/images/casper.png)"><span class="hidden">'s Picture</span></a>
+                <a class="img" href="/author/kyle" style="background-image: url(/assets/images/kyle.png)"><span class="hidden">'s Picture</span></a>
             </figure>
             
 
@@ -373,15 +357,15 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
             <section class="share">
                 <h4>Share this post</h4>
-                <a class="icon-twitter" href="http://twitter.com/share?text=Mapping District Average Scores&amp;url=http://kheuton.github.io/map-gap0"
+                <a class="icon-twitter" href="http://twitter.com/share?text=Mapping 3rd Grade ELA Smarter Balanced Assessment Results&amp;url=http://kheuton.github.io/map-gap-ela-leaflet"
                     onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
                     <span class="hidden">Twitter</span>
                 </a>
-                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://kheuton.github.io/map-gap0"
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://kheuton.github.io/map-gap-ela-leaflet"
                     onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
                     <span class="hidden">Facebook</span>
                 </a>
-                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://kheuton.github.io/map-gap0"
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://kheuton.github.io/map-gap-ela-leaflet"
                    onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
                     <span class="hidden">Google+</span>
                 </a>
@@ -400,39 +384,10 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
     <!-- [[! next_post ]] -->
     
-        <a class="read-next-story " style="background-image: url(/assets/images/cover7.jpg)" href="/d3-leaflet-combo">
-            <section class="post">
-                <h2>Load</h2>
-                <p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</p>
-            </section>
-        </a>
-    
-    <!-- [[! /next_post ]] -->
-    <!-- [[! prev_post ]] -->
-    
-        <a class="read-next-story prev " style="background-image: url(/assets/images/cover7.jpg)" href="/map-gap_d3">
+        <a class="read-next-story " style="background-image: url(/assets/images/cover7.jpg)" href="/map-gap_d3">
             <section class="post">
                 <h2>An Experimental and broken d3 map</h2>
                 <p>
-
-
-
-
 
 
 
@@ -446,12 +401,12 @@ missing
 
 
 
-
-
-
 </p>
             </section>
         </a>
+    
+    <!-- [[! /next_post ]] -->
+    <!-- [[! prev_post ]] -->
     
     <!-- [[! /prev_post ]] -->
 </aside>

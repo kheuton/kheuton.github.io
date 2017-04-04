@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- [[! Page Meta ]] -->
-    <title>Mapping District Average Scores</title>
+    <title>Load</title>
     <meta name="description" content="Education Maps - " />
 
     <meta name="HandheldFriendly" content="True" />
@@ -121,10 +121,10 @@
     <article class="post tag-test tag-content">
 
         <header class="post-header">
-            <h1 class="post-title">Mapping District Average Scores</h1>
+            <h1 class="post-title">Load</h1>
             <section class="post-meta">
             <!-- <a href='/'>Kyle Heuton</a> -->
-            <time class="post-date" datetime="2016-04-28">28 Apr 2016</time>
+            <time class="post-date" datetime="2017-03-04">04 Mar 2017</time>
                 <!-- [[tags prefix=" on "]] -->
                  
                 on 
@@ -139,16 +139,38 @@
 
         <section class="post-content">
             
-            <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+            <script type="text/javascript" src="my_layer.json"></script>
+
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 
 <script type="text/javascript" src="http://d3js.org/queue.v1.min.js"></script>
 
 <script type="text/javascript" src="http://d3js.org/topojson.v0.min.js"></script>
 
-<script src="http://d3js.org/queue.v1.min.js"></script>
-
 <style>
 
+svg {
+  position: relative;
+}
+
+
+.map {
+  width: 960px;
+  height: 500px;
+}
+.map {
+  position: relative;
+  overflow: hidden;
+}
+.layer {
+  position: absolute;
+}
+.tile {
+  pointer-events: none;
+  position: absolute;
+  width: 256px;
+  height: 256px;
+}
 
 	.info {
 		padding: 6px 8px;
@@ -174,172 +196,214 @@
 	margin-right: 8px;
 	opacity: 0.7;
 }
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 150px;
+  height: 25px;
+  padding: 2px;
+  font-size: 10px;
+  background: #FFFFE0;
+  border: 1px;
+  border-radius: 8px;
+  pointer-events: none;
+}
 </style>
 
+<div id="example"></div>
+<p><select id="groupA"></select></p>
 <div id="map">
-
 </div>
 
+<script src="//d3js.org/d3.v3.min.js"></script>
+
+<script src="../d3.geo.tile.min.js"></script>
+
 <script>
-queue()
-    .defer(d3.json, 'district_map.json') // topojson polygons
+labels = ["A", "B", "C", "D"];
+options = [0, 1, 2, 3];
 
-    .await(doIt); // function that uses files
+// Build the dropdown menu
+d3.select("#groupA").on("change", onChange)
+    .selectAll("option")
+	  .data(labels).enter()
+	  .append("option")
+		.text(function (d) { return d; });
 
-function doIt(error, schoolData) {
-	console.warn('but'+error);
-	console.warn('here');
-function getColor(d) {
-    return d > 3 ? '#3288bd' :
-           d > 2  ? '#99d594' :
-           d > 1  ? '#e6f598' :
-           d > 0  ? '#ffffbf' :
-           d > -1   ? '#fee08b' :
-           d > -2   ? '#fc8d59' :
-           d > -3   ? '#d53e4f' :
-                      '#d53e4f';
-}
-
-
+d3.selection.prototype.moveToFront = function() {  
+  return this.each(function(){
+    this.parentNode.appendChild(this);
+  });
+};
 var map = L.map('map').setView([47.6062, -122.3321], 11);
 L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
 	maxZoom: 18,
 	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+var svg = d3.select(map.getPanes().overlayPane).append("svg"),
+    g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+d3.json("d3_layer.json", function(error, collection) {
+  if (error) throw error;
+
+  var transform = d3.geo.transform({point: projectPoint}),
+      path = d3.geo.path().projection(transform);
+
+  var feature = g.selectAll("path")
+      .data(collection.features)
+    .enter().append("path").attr("d", path)
+    			 .style("fill",function (d,i) { return getColor(d.properties.gap) })
+    			 .style("stroke",function (d,i) { return getBorderColor(d.properties.missing) })
+    			 .style("stroke-width", 2)
+    			 .style("stroke-dasharray", 3)
+    			 .attr("fill-opacity",0.7)
+           .style("stroke-opacity",1)
+           .on("mouseover",highlightFeature)
+           .on("click", highlightFeature)
+           .on("mouseout", resetHighlightMouse)
+           .on("dblclick", zoomToFeature);
+
+  map.on("viewreset", reset);
+  reset();
+
+  // Reposition the SVG to cover the features.
+  function reset() {
+    var bounds = path.bounds(collection),
+        topLeft = bounds[0],
+        bottomRight = bounds[1];
+
+    svg .attr("width", bottomRight[0] - topLeft[0])
+        .attr("height", bottomRight[1] - topLeft[1])
+        .style("left", topLeft[0] + "px")
+        .style("top", topLeft[1] + "px");
+
+    g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+    feature.attr("d", path);
+  }
+
+  // Use Leaflet to implement a D3 geometric transformation.
+  function projectPoint(x, y) {
+    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+    this.stream.point(point.x, point.y);
+  }
+});
+
+var legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (map) {
+
+  var div = L.DomUtil.create('div', 'info legend'),
+    grades = [0, 5, 10, 20, 30, 40, 50, 60],
+    labels = [],
+    from, to;
+
+  for (var i = 0; i < grades.length; i++) {
+    from = grades[i];
+    to = grades[i + 1];
+
+    labels.push(
+      '<i style="background:' + getColor(from + 1) + '"></i> ' +
+      from + (to ? '&ndash;' + to : '+'));
+  }
+
+  div.innerHTML = labels.join('<br>');
+  return div;
+};
+
+legend.addTo(map);
+// control that shows state info on hover
+var info = L.control();
+
+info.onAdd = function (map) {
+  this._div = L.DomUtil.create('div', 'info');
+  this.update();
+  return this._div;
+};
+
+info.update = function (props) {
+  this._div.innerHTML = '<h4>Achievement Gap</h4>' +  (props ?
+    '<b>' + props.ES_ZONE + '</b><br />' + props.gap + '% more White students meet standards than their Black peers'
+    : 'Hover over a school');
+};
+var lastClicked;
+function highlightFeature(e) {
+
+  var feature = d3.select(this)
+  feature.style("stroke-width", 5)
+  feature.moveToFront()
+  feature.style("stroke-dasharray", 0 )
+  feature.attr("fill-opacity",0.7)
+  feature.style("stroke-opacity",1)
+  var layer = e.target;
 
 
-		// control that shows state info on hover
-		var info = L.control();
+  info.update(e.properties);
+  if (lastClicked && (lastClicked.id != feature.id)) {
+    resetHighlightClick(lastClicked);
+  }
 
-		info.onAdd = function (map) {
-			this._div = L.DomUtil.create('div', 'info');
-			this.update();
-			return this._div;
-		};
+  lastClicked = feature;
+}
 
-		info.update = function (props) {
-			this._div.innerHTML = '<h4>Achievement Gap</h4>' +  (props ?
-				'<b>' + props.data_name + '</b><br />' + props.score + '% more White students meet standards than their Black peers'
-				: 'Hover over a school');
-		};
+var geojson;
 
-		info.addTo(map);
+function resetHighlightMouse(feature) {
+  var feature = d3.select(this)
+  resetStyle(feature)
+  info.update();
+}
+function resetHighlightClick(feature) {
 
-		// get border based on which is misisng
-		function getBorderColor(d) {
-			return d == 'white' ? 'white':
-				  	 d == 'black' ? 'black':
-						 d == 'none'  ? 'gray':
-						 								 'gray';
-		}
+  resetStyle(feature)
+}
 
-		// get color depending on population density value
-		function getColor(d) {
-		    return d > 3 ? '#3288bd' :
-		           d > 2  ? '#99d594' :
-		           d > 1  ? '#e6f598' :
-		           d > 0  ? '#ffffbf' :
-		           d > -1   ? '#fee08b' :
-		           d > -2   ? '#fc8d59' :
-		           d > -3   ? '#d53e4f' :
-		                      '#d53e4f';
-		}
-		var lastClicked;
+function resetStyle(feature) {
 
-		function style(feature) {
-			return {
-				weight: 0.2,
-				opacity: 1,
-				color: getBorderColor('white'),
-				dashArray: '3',
-				fillOpacity: 0.7,
-				fillColor: getColor(feature.properties.score)
-			};
-		}
+  feature.style("stroke-width", 2)
+  feature.style("stroke-dasharray", 3)
+  feature.attr("fill-opacity",0.7)
+  feature.style("stroke-opacity",1.0)
+}
 
-		function highlightFeature(e) {
-			var layer = e.target;
+function zoomToFeature(e) {
+  map.fitBounds(e.target.getBounds());
+}
 
-			layer.setStyle({
-				weight: 5,
-				color: getBorderColor('white'),
-				dashArray: '',
-				fillOpacity: 0.7
-			});
-
-			if (!L.Browser.ie && !L.Browser.opera) {
-				layer.bringToFront();
-			}
-
-			info.update(layer.feature.properties);
-			if (lastClicked) {
-				resetHighlightClick(lastClicked);
-			}
-			lastClicked = e;
-		}
-
-		var geojson;
-
-		function resetHighlightMouse(e) {
-			geojson.resetStyle(e.target);
-			info.update();
-		}
-		function resetHighlightClick(e) {
-			geojson.resetStyle(e.target);
-
-		}
-
-		function zoomToFeature(e) {
-			map.fitBounds(e.target.getBounds());
-		}
-
-		function onEachFeature(feature, layer) {
-			layer.on({
-				mouseover: highlightFeature,
-				click: highlightFeature,
-				mouseout: resetHighlightMouse,
-				dblclick: zoomToFeature
-			});
-		}
+function onEachFeature(feature, layer) {
+  layer.on({
+    mouseover: highlightFeature,
+    click: highlightFeature,
+    mouseout: resetHighlightMouse,
+    dblclick: zoomToFeature
+  });
+}
 
 
+info.addTo(map);
 
 
+// get color depending on population density value
+function getColor(d) {
+ return d > 60 ? '#800026' :
+        d > 50  ? '#BD0026' :
+        d > 40  ? '#E31A1C' :
+        d > 30  ? '#FC4E2A' :
+        d > 20   ? '#FD8D3C' :
+        d > 10   ? '#FEB24C' :
+        d > 5   ? '#FED976' :
+                   '#FFEDA0';
+}
 
-			geojson = L.geoJson(schoolData, {
-				style: style,
-				onEachFeature: onEachFeature
-			}).addTo(map);
+// get border based on which is misisng
+function getBorderColor(d) {
+ return d == 'white' ? 'white':
+        d == 'black' ? 'black':
+        d == 'none'  ? 'gray':
+                        'gray';
+}
 
-		map.attributionControl.addAttribution('Assessment data &copy; <a href="http://www.k12.wa.us/">OSPI</a>');
-
-
-		var legend = L.control({position: 'bottomright'});
-
-		legend.onAdd = function (map) {
-
-			var div = L.DomUtil.create('div', 'info legend'),
-				grades = [-4, -3, -2, -1, 0, 1, 2, 3],
-				labels = [],
-				from, to;
-
-			for (var i = 0; i < grades.length; i++) {
-				from = grades[i];
-				to = grades[i + 1];
-
-				labels.push(
-					'<i style="background:' + getColor(from + 1) + '"></i> ' +
-					from + (to ? '&ndash;' + to : '+'));
-			}
-
-			div.innerHTML = labels.join('<br>');
-			return div;
-		};
-
-		legend.addTo(map);
-
-	};
 </script>
 
 
@@ -373,15 +437,15 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
             <section class="share">
                 <h4>Share this post</h4>
-                <a class="icon-twitter" href="http://twitter.com/share?text=Mapping District Average Scores&amp;url=http://kheuton.github.io/map-gap0"
+                <a class="icon-twitter" href="http://twitter.com/share?text=Load&amp;url=http://kheuton.github.io/d3-leaflet-combo"
                     onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
                     <span class="hidden">Twitter</span>
                 </a>
-                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://kheuton.github.io/map-gap0"
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://kheuton.github.io/d3-leaflet-combo"
                     onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
                     <span class="hidden">Facebook</span>
                 </a>
-                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://kheuton.github.io/map-gap0"
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://kheuton.github.io/d3-leaflet-combo"
                    onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
                     <span class="hidden">Google+</span>
                 </a>
@@ -400,7 +464,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
     <!-- [[! next_post ]] -->
     
-        <a class="read-next-story " style="background-image: url(/assets/images/cover7.jpg)" href="/d3-leaflet-combo">
+        <a class="read-next-story " style="background-image: url(/assets/images/cover7.jpg)" href="/map-gap">
             <section class="post">
                 <h2>Load</h2>
                 <p>
@@ -411,6 +475,58 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
 
 
+  
+    
+      
+        School year
+      
+      
+        
+      
+    
+    
+      
+        Grade
+      
+      
+        
+      
+    
+    
+      
+        Assessment
+      
+      
+        
+      
+    
+    
+      
+        Subject
+      
+      
+        
+      
+    
+  
+  
+    
+      
+        Comparison Student Group A
+      
+      
+        
+      
+    
+    
+      
+        Comparison Student Group B
+      
+      
+        
+      
+    
+  
 
 
 
@@ -425,20 +541,15 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
     <!-- [[! /next_post ]] -->
     <!-- [[! prev_post ]] -->
     
-        <a class="read-next-story prev " style="background-image: url(/assets/images/cover7.jpg)" href="/map-gap_d3">
+        <a class="read-next-story prev " style="background-image: url(/assets/images/cover7.jpg)" href="/map-nation">
             <section class="post">
-                <h2>An Experimental and broken d3 map</h2>
+                <h2>Hilarious  Attempt to Map Every School District in the Country</h2>
                 <p>
 
 
 
 
 
-
-
-
-gap
-missing
 
 
 
