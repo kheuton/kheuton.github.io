@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- [[! Page Meta ]] -->
-    <title>Hilarious  Attempt to Map Every School District in the Country</title>
+    <title>An Embarrassing Attempt to Map Every School District in the Country</title>
     <meta name="description" content="Education Maps - " />
 
     <meta name="HandheldFriendly" content="True" />
@@ -121,7 +121,7 @@
     <article class="post tag-test tag-content">
 
         <header class="post-header">
-            <h1 class="post-title">Hilarious  Attempt to Map Every School District in the Country</h1>
+            <h1 class="post-title">An Embarrassing Attempt to Map Every School District in the Country</h1>
             <section class="post-meta">
             <!-- <a href='/'>Kyle Heuton</a> -->
             <time class="post-date" datetime="2016-04-28">28 Apr 2016</time>
@@ -176,6 +176,7 @@
 }
 </style>
 
+<p>This one didn’t work out so hot. Mapping this many locations interactively wasn’t a good idea, I should have made map tiles that could be loaded dynamically. Data was scraped from this excellent <a href="https://www.nytimes.com/interactive/2016/04/29/upshot/money-race-and-success-how-your-school-district-compares.html?_r=0">New York Times article</a> on educational inequality in the US. Shapefiles came from USGS, and I did the fuzzy-name matching myself, but that failed a bit too.</p>
 <div id="map">
 
 </div>
@@ -219,9 +220,9 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 		};
 
 		info.update = function (props) {
-			this._div.innerHTML = '<h4>Achievement Gap</h4>' +  (props ?
-				'<b>' + props.data_name + '</b><br />' + props.score + '% more White students meet standards than their Black peers'
-				: 'Hover over a school');
+			this._div.innerHTML = '<h4>Average Score</h4>' +  (props ?
+				'<b>' + props.data_name + '</b><br />' + props.score
+				: 'Hover over a district');
 		};
 
 		info.addTo(map);
@@ -312,7 +313,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 				onEachFeature: onEachFeature
 			}).addTo(map);
 
-		map.attributionControl.addAttribution('Assessment data &copy; <a href="http://www.k12.wa.us/">OSPI</a>');
+		map.attributionControl.addAttribution('District data &copy; <a href="https://www.nytimes.com/interactive/2016/04/29/upshot/money-race-and-success-how-your-school-district-compares.html?_r=0">NYT</a>');
 
 
 		var legend = L.control({position: 'bottomright'});
@@ -373,7 +374,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Li
 
             <section class="share">
                 <h4>Share this post</h4>
-                <a class="icon-twitter" href="http://twitter.com/share?text=Hilarious  Attempt to Map Every School District in the Country&amp;url=http://kheuton.github.io/map-nation"
+                <a class="icon-twitter" href="http://twitter.com/share?text=An Embarrassing Attempt to Map Every School District in the Country&amp;url=http://kheuton.github.io/map-nation"
                     onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
                     <span class="hidden">Twitter</span>
                 </a>
