@@ -476,12 +476,8 @@ function pollDropdown() {
         };
 };
 
-
 var lastClicked;
-
-function highlightFeature(e) {
-
-  var feature = d3.select(this)
+function highlightFeatureLogic(e, feature) {
   feature.style("stroke-width", 5)
   feature.moveToFront()
   feature.style("stroke-dasharray", 0 )
@@ -491,11 +487,28 @@ function highlightFeature(e) {
 
 
   info.update(e.properties);
+
+  if (lastClicked) {
+  resetHighlightClick(lastClicked);
+  };
+};
+
+
+
+function highlightFeature(e) {
+
+  var feature = d3.select(this)
+
   // Without the data()[0].id comparison,
   // repeatedly selecting an element will unhighlight it
-  if (lastClicked && (lastClicked.data()[0].id != feature.data()[0].id)) {
-    resetHighlightClick(lastClicked);
-  }
+  // Additionally, we dont want to highlight the same thing over and over again
+  // Fixes a weird ie bug
+  if (!lastClicked) {
+    highlightFeatureLogic(e, feature);
+  } else if (lastClicked.data()[0].id != feature.data()[0].id) {
+    highlightFeatureLogic(e, feature);
+
+  };
 
   lastClicked = feature;
 }
@@ -648,7 +661,7 @@ function computeText(properties) {
 	</item>
 
 	<item>
-	  <title>An Embarrassing Attempt to Map Every School District in the Country</title>
+	  <title>An Attempt to Map Every School District in the Country</title>
 	  <link>//map-nation</link>
 	  <author>Kyle Heuton</author>
 	  <pubDate>2016-04-28T03:18:00-07:00</pubDate>
@@ -717,7 +730,7 @@ function getColor(d) {
 }
 
 
-var map = L.map('map').setView([47.6062, -122.3321], 11);
+var map = L.map('map').setView([39.8282, -96.5795], 4);
 L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
 	maxZoom: 18,
 	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
