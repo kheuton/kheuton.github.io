@@ -7,10 +7,10 @@
 
 # Site Settings
 locale                   : "en-US"
-title                    : "Kyle's Blog"
+title                    : "Kyle's Research"
 title_separator          : "-"
 name                     : &name "Kyle Heuton"
-description              : &description "personal description"
+description              : &description "PhD Candidate at Tufts University"
 url                      : https://kheuton.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "kheuton/kheuton.github.io"

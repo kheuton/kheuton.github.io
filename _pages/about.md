@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Welcome to my blog"
+title: "Welcome to my page"
 excerpt: "About me"
 author_profile: true
 redirect_from: 
@@ -8,4 +8,4 @@ redirect_from:
   - /about.html
 ---
 
-I'm a PhD Candidate at Tufts University. Welcome to my personal page!
+I'm a PhD Candidate at Tufts University studying Computer Science, with a focus on applications in public health and healthcare.
